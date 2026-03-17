@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "uv-package-manager": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "87a2e612ac3d006670060bec64939b667bed40bb1ed5e6012ba1cc80307020ab"
+    }
+  }
+}
