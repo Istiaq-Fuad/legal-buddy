@@ -4,7 +4,12 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "boto3>=1.42.72",
+    "mistralai>=2.0.5",
+    "python-dotenv>=1.2.2",
+    "qdrant-client>=1.17.1",
+]
 
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu" }]
@@ -17,3 +22,10 @@ explicit = true
 
 [tool.uv.workspace]
 members = ["apps/api", "apps/chatbot_ui"]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.2.0",
+    "matplotlib>=3.10.8",
+    "pandas>=2.3.3",
+]
