@@ -30,7 +30,7 @@ ENV PYTHONPATH="/app/apps/chatbot_ui/src:$PYTHONPATH"
 RUN addgroup --system app && \
     adduser --system --ingroup app app && \
     mkdir -p /home/app/.streamlit && \
-    chown -R app:app /app /home/app
+    chown -R app:app /home/app
 
 # Switch to non-root user
 USER app

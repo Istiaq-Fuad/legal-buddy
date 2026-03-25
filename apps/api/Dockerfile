@@ -25,8 +25,7 @@ ENV PYTHONPATH="/app/apps/api/src:$PYTHONPATH"
 
 # Create non-root user and set permissions
 RUN addgroup --system app && \
-    adduser --system --ingroup app app && \
-    chown -R app:app /app
+    adduser --system --ingroup app app
 
 # Switch to non-root user
 USER app

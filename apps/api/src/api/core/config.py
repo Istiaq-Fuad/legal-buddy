@@ -16,8 +16,7 @@ class Config(BaseSettings):
     QDRANT_URL: str = "http://213.136.80.53:6333"
     QDRANT_COLLECTION: str = "legal_acts_event_rag_full"
 
-    DEFAULT_PROVIDER: str = "openai"
-    DEFAULT_MODEL_NAME: str = "openai/gpt-5.4-nano"
+    DEFAULT_MODEL_NAME: str = "gemini-2.5-flash"
     RETRIEVAL_TOP_K: int = 6
     ANSWER_MAX_TOKENS: int = 700
 

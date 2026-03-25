@@ -14,16 +14,6 @@ st.caption(
 with st.sidebar:
     st.header("Settings")
 
-    provider = st.selectbox("Provider", options=["openai", "groq", "gemini"], index=0)
-
-    # Simple default model logic based on provider
-    default_model = "openai/gpt-5.4-nano"
-    if provider == "groq":
-        default_model = "llama-3.1-8b-instant"
-    elif provider == "gemini":
-        default_model = "gemini-2.5-flash"
-
-    model_name = st.text_input("Model Name", value=default_model)
     max_tokens = st.number_input(
         "Max Tokens", min_value=10, max_value=8192, value=500, step=50
     )
@@ -80,15 +70,13 @@ if prompt := st.chat_input("Ask a legal question..."):
         try:
             payload = {
                 "question": prompt,
-                "provider": provider,
-                "model_name": model_name,
                 "max_tokens": max_tokens,
                 "top_k": top_k,
             }
 
             with st.spinner("Thinking..."):
                 response = requests.post(
-                    f"{config.API_URL}/legal/chat", json=payload, timeout=120
+                    f"{config.API_URL}/rag/legal/chat", json=payload, timeout=120
                 )
                 response.raise_for_status()
 
