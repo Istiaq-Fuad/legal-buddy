@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "d2561d49820b0625ceff795a82d6d215e39099a639838e241d446b26cd21c5f6"
     },
+    "qdrant-vector-search": {
+      "source": "davila7/claude-code-templates",
+      "sourceType": "github",
+      "computedHash": "7d759309b0c22b2d6097562d6d349fdac38cfc661fcfbe658f158444403310da"
+    },
     "uv-package-manager": {
       "source": "wshobson/agents",
       "sourceType": "github",
