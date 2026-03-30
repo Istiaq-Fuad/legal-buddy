@@ -3,6 +3,7 @@
 Production-style Retrieval Augmented Generation (RAG) project for Bangladesh legal acts.
 
 This workspace contains:
+
 - A FastAPI backend that performs retrieval from Qdrant and answer generation with Gemini
 - A Streamlit frontend chat UI for end users
 - Shared workspace tooling via `uv`, Docker, and Docker Compose
@@ -10,6 +11,7 @@ This workspace contains:
 ## What This Project Does
 
 For each user question:
+
 1. The API creates an embedding with AWS Bedrock
 2. It retrieves top matching legal sections from Qdrant
 3. It builds a grounded prompt with citation tags
@@ -46,7 +48,13 @@ llm_engineering/
 
 ## Quick Start (Recommended)
 
-1. Create a root `.env` file:
+1. Create your local env file from the template:
+
+```bash
+cp .env.example .env
+```
+
+Then fill values in `.env`:
 
 ```env
 # API generation model
@@ -92,6 +100,7 @@ docker compose up --build
 ```
 
 4. Open apps:
+
 - UI: `http://localhost:8501`
 - API docs: `http://localhost:8000/docs`
 - Health: `http://localhost:8000/rag/health`
@@ -131,6 +140,7 @@ Request body:
 ```
 
 Notes:
+
 - `question` is required
 - `top_k` is optional and falls back to `RETRIEVAL_TOP_K`
 - `max_tokens` is optional. If omitted/null and `ANSWER_MAX_TOKENS` is also unset, the model default token limit behavior is used.
