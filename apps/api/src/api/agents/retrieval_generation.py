@@ -79,10 +79,10 @@ def _embed_text_query_with_trace(
 
     query_text = text[:max_input_chars]
     with langfuse.start_as_current_observation(
-        as_type="span",
+        as_type="embedding",
         name="embed-query",
+        model=config.EMBEDDING_MODEL,
         input={
-            "model": config.EMBEDDING_MODEL,
             "input_chars": len(query_text),
             "max_input_chars": max_input_chars,
         },
@@ -139,7 +139,7 @@ def retrieve_sources(question: str, top_k: int) -> list[SourceItem]:
         )
 
         with langfuse.start_as_current_observation(
-            as_type="span",
+            as_type="retriever",
             name="vector-search",
             input={
                 "collection": config.QDRANT_COLLECTION,
@@ -224,18 +224,20 @@ def build_grounded_prompt(question: str, sources: list[SourceItem]) -> list[dict
     ]
 
 
-def run_llm(messages: list[dict], max_tokens: int) -> str:
+def run_llm(messages: list[dict], max_tokens: int | None = None) -> str:
     if not config.GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY is not configured")
 
     langfuse = get_langfuse_client()
     client = genai.Client(api_key=config.GEMINI_API_KEY)
 
-    generation_config = types.GenerateContentConfig(
-        # max_output_tokens=max_tokens,
-        temperature=0.2,
-        top_p=0.9,
-    )
+    generation_config_kwargs: dict[str, int | float] = {
+        "temperature": 0.2,
+        "top_p": 0.9,
+    }
+    if max_tokens is not None:
+        generation_config_kwargs["max_output_tokens"] = max_tokens
+    generation_config = types.GenerateContentConfig(**generation_config_kwargs)
 
     if langfuse is None:
         response = client.models.generate_content(
@@ -245,12 +247,19 @@ def run_llm(messages: list[dict], max_tokens: int) -> str:
         )
         return response.text or "No response generated."
 
+    model_parameters: dict[str, int | float] = {
+        "temperature": 0.2,
+        "top_p": 0.9,
+    }
+    if max_tokens is not None:
+        model_parameters["max_output_tokens"] = max_tokens
+
     with langfuse.start_as_current_observation(
         as_type="generation",
         name="answer-generation",
         model=config.DEFAULT_MODEL_NAME,
         input=messages,
-        metadata={"max_tokens": max_tokens},
+        model_parameters=model_parameters,
     ) as generation:
         response = client.models.generate_content(
             model=config.DEFAULT_MODEL_NAME,
@@ -273,7 +282,9 @@ def legal_chat_pipeline(
     max_tokens: int | None = None,
 ) -> LegalChatResponse:
     resolved_top_k = top_k or config.RETRIEVAL_TOP_K
-    resolved_max_tokens = max_tokens or config.ANSWER_MAX_TOKENS
+    resolved_max_tokens = (
+        max_tokens if max_tokens is not None else config.ANSWER_MAX_TOKENS
+    )
 
     langfuse = get_langfuse_client()
     if langfuse is None:
@@ -289,7 +300,7 @@ def legal_chat_pipeline(
         return LegalChatResponse(answer=answer, sources=sources)
 
     with langfuse.start_as_current_observation(
-        as_type="trace",
+        as_type="span",
         name="legal-chat-request",
         input={
             "question": question,

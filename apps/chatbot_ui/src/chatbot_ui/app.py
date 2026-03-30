@@ -14,9 +14,6 @@ st.caption(
 with st.sidebar:
     st.header("Settings")
 
-    max_tokens = st.number_input(
-        "Max Tokens", min_value=10, max_value=8192, value=500, step=50
-    )
     top_k = st.slider("Sources to Retrieve", min_value=3, max_value=12, value=6, step=1)
 
     st.divider()
@@ -70,7 +67,6 @@ if prompt := st.chat_input("Ask a legal question..."):
         try:
             payload = {
                 "question": prompt,
-                "max_tokens": max_tokens,
                 "top_k": top_k,
             }
 
