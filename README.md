@@ -1,343 +1,158 @@
-# LLM Engineering Learning Path
+# Legal Acts RAG Monorepo
 
-This codebase guides you from fundamental API usage through advanced model deployment, optimization, and code generation.
+Production-style Retrieval Augmented Generation (RAG) project for Bangladesh legal acts.
 
-## Overview
+This workspace contains:
+- A FastAPI backend that performs retrieval from Qdrant and answer generation with Gemini
+- A Streamlit frontend chat UI for end users
+- Shared workspace tooling via `uv`, Docker, and Docker Compose
 
-This learning path covers essential LLM engineering skills:
+## What This Project Does
 
-- **API Integration**: Working with different LLM providers
-- **Web Data Processing**: Web scraping and intelligent link extraction
-- **Multi-Provider Workflows**: Comparing and combining different models
-- **UI Development**: Building interactive applications with Gradio
-- **Transformer Models**: Using pre-trained models from Hugging Face
-- **Tokenization**: Understanding and working with tokenizers
-- **Model Optimization**: Quantization and efficient inference
+For each user question:
+1. The API creates an embedding with AWS Bedrock
+2. It retrieves top matching legal sections from Qdrant
+3. It builds a grounded prompt with citation tags
+4. It generates an answer with Gemini
+5. It returns answer + source metadata to the UI
 
-## Curriculum
+The UI displays the answer and expandable source cards with similarity scores.
 
-### 📘 Day 1: Introduction to LLMs and Web Scraping
+## Repository Layout
 
-**File:** `day1_intro.ipynb`
-
-Learn the fundamentals of working with LLMs and build your first practical application.
-
-**Topics:**
-
-- Setting up API credentials (Mistral AI)
-- Making basic chat API calls
-- Web scraping with BeautifulSoup
-- Building a website content summarizer
-- Combining web data with LLM generation
-
-**Key Skills:** API integration, web scraping, prompt engineering
-
----
-
-### 📘 Day 2: Extracting Links with JSON Response Format
-
-**File:** `day2_parser.ipynb`
-
-Extract and intelligently filter links from websites using structured JSON responses.
-
-**Topics:**
-
-- Extending the Website class with link extraction
-- JSON response formatting from LLMs
-- Building system prompts for intelligent filtering
-- Filtering irrelevant links (privacy, ToS, email)
-- Complete workflow for multi-page analysis
-
-**Key Skills:** JSON API responses, semantic link filtering, prompt design
-
----
-
-### 📘 Day 3: Working with Multiple LLM Providers
-
-**File:** `day3_adv_conv.ipynb`
-
-Compare different LLM providers and create interactions between models.
-
-**Topics:**
-
-- Setting up multiple API clients (Mistral, OpenRouter/GPT-4)
-- Comparing model responses on the same prompts
-- Designing distinct system prompts for different personalities
-- Implementing adversarial conversations between models
-- Understanding how prompts shape model behavior
-
-**Key Skills:** Multi-provider integration, comparative analysis, personality design
-
----
-
-### 📘 Day 4: Building Interactive Web UIs with Gradio
-
-**File:** `day4_gradio.ipynb`
-
-Create web interfaces for LLM applications with real-time streaming.
-
-**Topics:**
-
-- Environment setup and API credential management
-- Implementing streaming responses for real-time feedback
-- Building Gradio interfaces with text input/markdown output
-- Creating user-friendly chat interfaces
-- Deploying interactive demos
-
-**Key Skills:** UI development, streaming APIs, user experience design
-
----
-
-### 📘 Day 5: Exploring Transformers and Hugging Face Hub
-
-**File:** `day5_hf_pipelines.ipynb`
-
-Work with pre-trained transformer models for various NLP tasks. (Requires Google Colab)
-
-**Topics:**
-
-- Setting up Google Colab with GPU acceleration
-- Hugging Face authentication and hub access
-- Using transformer pipelines for sentiment analysis
-- Named Entity Recognition (NER)
-- Question answering systems
-- Working with the Datasets library
-
-**Key Skills:** Transformer pipelines, GPU utilization, NLP task automation
-
----
-
-### 📘 Day 6: Tokenization and Chat Templates
-
-**File:** `day6_tokenization.ipynb`
-
-Master tokenizers and learn how to format conversations for different models. (Requires Google Colab)
-
-**Topics:**
-
-- Loading pre-trained tokenizers from Hugging Face
-- Applying chat templates to format messages
-- Comparing tokenization across models (DeepSeek, Phi-4, Qwen)
-- Understanding token-to-text conversion
-- Preparing prompts for code-focused models
-
-**Key Skills:** Tokenizer mechanics, chat template formatting, cross-model compatibility
-
----
-
-### 📘 Day 7: Model Quantization and Local LLM Deployment
-
-**File:** `day7_hf_models.ipynb`
-
-Run large language models efficiently on resource-constrained devices. (Requires Google Colab)
-
-**Topics:**
-
-- Installing quantization libraries (bitsandbytes, accelerate)
-- Loading models with 4-bit quantization
-- Comparing different open-source models:
-  - Llama 3.2 1B Instruct
-  - Phi-4 Mini Instruct
-  - Qwen 3 4B Instruct
-  - DeepSeek R1 Distill Qwen 1.5B
-- Implementing streaming text generation
-- Memory optimization and footprint analysis
-- Creating reusable generation functions
-
-**Key Skills:** Model quantization, memory management, inference optimization
-
----
-
-### 📘 Day 8: Code Generation and Language Porting
-
-**File:** `day8_code_generator.ipynb`
-
-Build a Gradio tool that ports Python code to high-performance Rust or C++ using LLMs, then compiles and runs the generated code.
-
-**Topics:**
-
-- Selecting LLM backends (Groq, optional Gemini)
-- Crafting system/user prompts for code translation
-- Stripping fenced code blocks from responses
-- Compiling and executing generated Rust/C++ code from Python
-- Displaying interactive results with Gradio
-
-**Key Skills:** Code generation, prompt design for compilers, Gradio UI, execution safety
-
----
+```text
+llm_engineering/
+├── apps/
+│   ├── api/                # FastAPI RAG service
+│   └── chatbot_ui/         # Streamlit chat frontend
+├── data/acts/              # Legal act JSON corpus
+├── notebooks/
+│   └── qdrant_ingestion.ipynb
+├── docker-compose.yml
+├── Makefile
+├── pyproject.toml          # uv workspace root
+└── README.md
+```
 
 ## Prerequisites
 
-### General Requirements
+- Python 3.13+
+- `uv` installed: https://docs.astral.sh/uv/
+- Docker + Docker Compose (recommended for full stack)
+- Access to:
+  - AWS Bedrock embedding model
+  - Gemini API key
+  - Reachable Qdrant instance
 
-- Python 3.8+
-- Basic understanding of Python
-- Familiarity with Jupyter notebooks
+## Quick Start (Recommended)
 
-### API Keys Required
-
-- **Mistral AI**: Get from [console.mistral.ai](https://console.mistral.ai)
-- **OpenRouter** (Day 3 only): Get from [openrouter.ai](https://openrouter.ai)
-- **Groq** (Day 8): Get from [console.groq.com](https://console.groq.com)
-- **Gemini** (Day 8, optional): Get from [ai.google.dev](https://ai.google.dev)
-
-### Environment Setup
-
-Create a `.env` file in the root directory:
+1. Create a root `.env` file:
 
 ```env
-MISTRAL_API_KEY=your_mistral_api_key_here
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-GROQ_API_KEY=your_groq_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
-HF_TOKEN=your_huggingface_token_here
+# API generation model
+GEMINI_API_KEY=your_gemini_key
+DEFAULT_MODEL_NAME=gemini-2.5-flash
+
+# AWS Bedrock embeddings
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_DEFAULT_REGION=us-east-1
+EMBEDDING_MODEL=cohere.embed-v4
+
+# Qdrant
+QDRANT_URL=http://your-qdrant-host:6333
+QDRANT_COLLECTION=legal_acts_event_rag_full
+
+# Retrieval + generation defaults
+RETRIEVAL_TOP_K=6
+# Optional. Leave empty/unset to let model default behavior apply.
+ANSWER_MAX_TOKENS=
+
+# Frontend -> API URL (inside docker network default is fine)
+API_URL=http://api:8000
+
+# Optional Langfuse
+LANGFUSE_PUBLIC_KEY=
+LANGFUSE_SECRET_KEY=
+LANGFUSE_BASE_URL=
+LANGFUSE_HOST=
+LANGFUSE_TRACING_ENVIRONMENT=development
 ```
 
-### Package Dependencies
-
-Install required packages:
+2. Install workspace deps:
 
 ```bash
-pip install python-dotenv requests beautifulsoup4 mistralai openai gradio torch transformers datasets huggingface-hub bitsandbytes accelerate
+make sync
 ```
 
-**Note:** Days 5-7 require running in Google Colab with GPU access.
+3. Start both services:
 
----
-
-## Getting Started
-
-1. **Clone or download this repository**
-2. **Set up your environment variables** (create `.env` file)
-3. **Start with Day 1** and progress sequentially
-4. **For Days 5-7:** Use the "Open in Colab" button in each notebook
-
-Each notebook is self-contained and includes:
-
-- Clear section headers explaining each step
-- Standalone code cells that can be run independently
-- Sample output from previous executions
-- Hands-on exercises and experiments
-
----
-
-## Project Structure
-
-```
-llm_engineering/
-├── day1_intro.ipynb          # LLMs & Web Scraping
-├── day2_parser.ipynb         # Link Extraction with JSON
-├── day3_adv_conv.ipynb       # Multiple Providers
-├── day4_gradio.ipynb         # Gradio UI Development
-├── day5_hf_pipelines.ipynb   # Transformers & NLP Tasks
-├── day6_tokenization.ipynb   # Tokenization & Chat Templates
-├── day7_hf_models.ipynb      # Quantization & Local Deployment
-├── day8_code_generator.ipynb # Code Generation & Porting
-├── pyproject.toml      # Project configuration
-└── README.md          # This file
+```bash
+docker compose up --build
 ```
 
----
+4. Open apps:
+- UI: `http://localhost:8501`
+- API docs: `http://localhost:8000/docs`
+- Health: `http://localhost:8000/rag/health`
 
-## Key Concepts Covered
+## Local Development Without Docker
 
-### LLM Fundamentals
+Install all workspace packages once:
 
-- Understanding different LLM providers and their APIs
-- Prompt engineering and system prompts
-- Streaming vs. batch responses
-- JSON response formatting
+```bash
+uv sync --all-packages --all-extras --all-groups
+```
 
-### Data Processing
+Run API:
 
-- Web scraping and content extraction
-- Intelligent filtering and extraction
-- Handling multiple data sources
+```bash
+uv run --package api uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
+```
 
-### Model Usage
+Run UI in another terminal:
 
-- Running inference with different models
-- Comparing model outputs
-- Optimizing model performance
-- Understanding tokenization
+```bash
+API_URL=http://localhost:8000 uv run --package chatbot-ui streamlit run apps/chatbot_ui/src/chatbot_ui/app.py
+```
 
-### Practical Applications
+## API Contract Summary
 
-- Building web interfaces
-- Creating multi-step workflows
-- Deploying efficient inference systems
+`POST /rag/legal/chat`
 
----
+Request body:
 
-## Tips for Success
+```json
+{
+  "question": "What is the punishment for theft?",
+  "top_k": 6,
+  "max_tokens": null
+}
+```
 
-1. **Execute cells sequentially** - Each notebook builds on previous setup steps
-2. **Experiment freely** - Modify prompts and inputs to see different behaviors
-3. **Monitor API usage** - Days 1-4 make actual API calls (you may incur costs)
-4. **Use GPU in Colab** - Enable GPU runtime for Days 5-7 for better performance
-5. **Check outputs** - Each notebook includes example outputs to compare against
+Notes:
+- `question` is required
+- `top_k` is optional and falls back to `RETRIEVAL_TOP_K`
+- `max_tokens` is optional. If omitted/null and `ANSWER_MAX_TOKENS` is also unset, the model default token limit behavior is used.
+- The Streamlit UI currently does not expose `max_tokens` to end users.
 
----
+## Observability
 
-## Troubleshooting
+Langfuse instrumentation is integrated in the API for retrieval/generation spans. Configure Langfuse env vars to enable ingestion. If keys are not configured, pipeline still runs without tracing.
 
-**API Key Issues:**
+## Data and Ingestion
 
-- Verify `.env` file is in the root directory
-- Check that API keys are valid and not expired
-- Ensure environment variables are loaded with `load_dotenv()`
+- Legal act JSON files live under `data/acts/`
+- The ingestion workflow is documented in `notebooks/qdrant_ingestion.ipynb`
 
-**Colab Issues (Days 5-7):**
+## Useful Commands
 
-- Enable GPU: Runtime → Change runtime type → GPU
-- Authenticate with HF token when prompted
-- Ensure sufficient storage for model downloads
+```bash
+make sync                # install/update workspace deps
+make run-docker-compose  # sync + docker compose up --build
+```
 
-**Out of Memory:**
+## Additional Docs
 
-- Reduce batch sizes in sentiment analysis
-- Run memory cleanup cells explicitly
-- Use smaller quantized models
-
----
-
-## Resources
-
-- [Mistral AI Documentation](https://docs.mistral.ai)
-- [OpenRouter Documentation](https://openrouter.ai/docs)
-- [Hugging Face Transformers](https://huggingface.co/transformers/)
-- [Gradio Documentation](https://www.gradio.app/docs)
-- [bitsandbytes Quantization](https://github.com/TimDettmers/bitsandbytes)
-
----
-
-## Learning Outcomes
-
-By completing this course, you'll be able to:
-
-✅ Integrate with multiple LLM APIs  
-✅ Build LLM-powered applications with web UIs  
-✅ Process and extract data from web sources  
-✅ Work with pre-trained transformer models  
-✅ Understand and optimize tokenization  
-✅ Deploy models efficiently with quantization  
-✅ Compare and combine different LLM providers  
-✅ Implement streaming and real-time features
-
----
-
-## Contributing
-
-Feel free to fork this repository and add improvements, additional examples, or corrections.
-
----
-
-## License
-
-This project is open source and available under the MIT License.
-
----
-
-**Happy Learning! 🚀**
-
-For questions or issues, please open an issue in the repository.
+- API details: `apps/api/README.md`
+- UI details: `apps/chatbot_ui/README.md`
