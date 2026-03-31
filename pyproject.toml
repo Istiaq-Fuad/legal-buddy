@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "boto3>=1.42.72",
-    "mistralai>=2.0.5",
+    "instructor>=1.14.5",
     "python-dotenv>=1.2.2",
     "qdrant-client>=1.17.1",
 ]
