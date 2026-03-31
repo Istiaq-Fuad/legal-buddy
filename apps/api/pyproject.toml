@@ -11,6 +11,7 @@ dependencies = [
     "google-genai>=1.67.0",
     "groq>=1.1.1",
     "instructor>=1.14.5",
+    "jsonref>=1.1.0",
     "langfuse>=4.0.1",
     "openai>=2.1.0",
     "pydantic>=2.11.10",

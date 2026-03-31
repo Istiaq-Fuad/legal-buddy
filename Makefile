@@ -1,5 +1,5 @@
 run-docker-compose:
-	uv sync
+	uv sync --all-packages --all-extras --all-groups
 	docker compose up --build
 
 sync:

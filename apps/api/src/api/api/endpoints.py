@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from api.api.models import LegalChatRequest, LegalChatResponse
 import logging
-from api.agents.retrieval_generation import legal_chat_pipeline
+from api.agents.legal_chat.pipeline import legal_chat_pipeline
 
 logging.basicConfig(
     level=logging.INFO,
